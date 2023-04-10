@@ -1,4 +1,4 @@
-package util
+package goutil
 
 func BytesJoin(arr ...[]byte) []byte {
 	var n int

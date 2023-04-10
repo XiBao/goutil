@@ -81,6 +81,29 @@ func AESECBEncrypt(key []byte, text string) (string, error) {
 	return base64.StdEncoding.EncodeToString(dst), nil
 }
 
+// AESECBDecryptToBytes from base64 to decrypted bytes
+func AESECBDecryptToBytes(key []byte, cryptoText string) ([]byte, error) {
+	ciphertext, _ := base64.StdEncoding.DecodeString(cryptoText)
+
+	//key = PKCS5Padding(key, 16)
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	bs := block.BlockSize()
+	if len(ciphertext)%bs != 0 {
+		return nil, errors.New("DecryptAesECB Need a multiple of the blocksize")
+	}
+
+	dst := make([]byte, len(ciphertext))
+
+	mode := NewECBDecrypter(block)
+	mode.CryptBlocks(dst, ciphertext)
+	out := PKCS5UnPadding(dst)
+	return out[:], nil
+}
+
 // AESECBDecrypt from base64 to decrypted string
 func AESECBDecrypt(key []byte, cryptoText string) (string, error) {
 	ciphertext, _ := base64.StdEncoding.DecodeString(cryptoText)

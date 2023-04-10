@@ -62,6 +62,11 @@ func TimeToDate(ts time.Time) time.Time {
 	return time.Date(ts.Year(), ts.Month(), ts.Day(), 0, 0, 0, 0, loc)
 }
 
+func TimeToDateEnd(ts time.Time) time.Time {
+	loc := time.Now().Location()
+	return time.Date(ts.Year(), ts.Month(), ts.Day(), 23, 59, 59, 0, loc)
+}
+
 func TimeToHour(ts time.Time) time.Time {
 	loc := ts.Location()
 	return time.Date(ts.Year(), ts.Month(), ts.Day(), ts.Hour(), 0, 0, 0, loc)

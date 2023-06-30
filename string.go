@@ -87,76 +87,55 @@ func StringToUint64(str string) uint64 {
 }
 
 func BitStringAnd(str1 string, str2 string) (string, error) {
-	var (
-		n1  big.Int
-		n2  big.Int
-		ret big.Int
-	)
-	if _, ok := n1.SetString(str1, 2); !ok {
-		return "", errors.New("invalid str1")
-	}
-	if _, ok := n2.SetString(str2, 2); !ok {
-		return "", errors.New("invalid str2")
-	}
-	ret.And(&n1, &n2)
-	buf := GetBufferPool()
-	defer PutBufferPool(buf)
-	buf.Grow(ret.BitLen())
-	for _, b := range ret.Bits() {
-		if b == 1 {
-			buf.WriteByte('1')
-		} else {
-			buf.WriteByte('0')
-		}
-	}
-	str := buf.String()
-	return str, nil
+	return bitStringOp(str1, str2, '&')
 }
 
 func BitStringOr(str1 string, str2 string) (string, error) {
-	var (
-		n1  big.Int
-		n2  big.Int
-		ret big.Int
-	)
-	if _, ok := n1.SetString(str1, 2); !ok {
-		return "", errors.New("invalid str1")
-	}
-	if _, ok := n2.SetString(str2, 2); !ok {
-		return "", errors.New("invalid str2")
-	}
-	ret.Or(&n1, &n2)
-	buf := GetBufferPool()
-	defer PutBufferPool(buf)
-	buf.Grow(ret.BitLen())
-	for _, b := range ret.Bits() {
-		if b == 1 {
-			buf.WriteByte('1')
-		} else {
-			buf.WriteByte('0')
-		}
-	}
-	str := buf.String()
-	return str, nil
+	return bitStringOp(str1, str2, '|')
 }
 
 func BitStringXor(str1 string, str2 string) (string, error) {
+	return bitStringOp(str1, str2, '^')
+}
+
+func bitStringOp(str1 string, str2 string, op byte) (string, error) {
 	var (
-		n1  big.Int
-		n2  big.Int
-		ret big.Int
+		n1 big.Int
+		n2 big.Int
 	)
+	l := len(str1)
+	if l2 := len(str2); l2 > l {
+		l = l2
+	}
 	if _, ok := n1.SetString(str1, 2); !ok {
 		return "", errors.New("invalid str1")
 	}
 	if _, ok := n2.SetString(str2, 2); !ok {
 		return "", errors.New("invalid str2")
 	}
-	ret.Xor(&n1, &n2)
+	return bitsOp(&n1, &n2, op, l), nil
+}
+
+func bitsOp(n1 *big.Int, n2 *big.Int, op byte, l int) string {
+	var ret big.Int
+	switch op {
+	case '^':
+		ret.Xor(n1, n2)
+	case '|':
+		ret.Or(n1, n2)
+	case '&':
+		ret.And(n1, n2)
+	}
 	buf := GetBufferPool()
 	defer PutBufferPool(buf)
-	buf.Grow(ret.BitLen())
-	for _, b := range ret.Bits() {
+	append := l - ret.BitLen()
+	if append > 0 {
+		for i := 0; i < append; i++ {
+			buf.WriteByte('0')
+		}
+	}
+	for i := ret.BitLen() - 1; i >= 0; i-- {
+		b := ret.Bit(i)
 		if b == 1 {
 			buf.WriteByte('1')
 		} else {
@@ -164,5 +143,5 @@ func BitStringXor(str1 string, str2 string) (string, error) {
 		}
 	}
 	str := buf.String()
-	return str, nil
+	return str
 }

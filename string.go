@@ -1,6 +1,8 @@
 package goutil
 
 import (
+	"errors"
+	"math/big"
 	"math/rand"
 	"strings"
 	"time"
@@ -82,4 +84,85 @@ func DBQuote(str string, db *autorc.Conn) string {
 
 func StringToUint64(str string) uint64 {
 	return xxhash.Sum64([]byte(str))
+}
+
+func BitStringAnd(str1 string, str2 string) (string, error) {
+	var (
+		n1  big.Int
+		n2  big.Int
+		ret big.Int
+	)
+	if _, ok := n1.SetString(str1, 2); !ok {
+		return "", errors.New("invalid str1")
+	}
+	if _, ok := n2.SetString(str2, 2); !ok {
+		return "", errors.New("invalid str2")
+	}
+	ret.And(&n1, &n2)
+	buf := GetBufferPool()
+	defer PutBufferPool(buf)
+	buf.Grow(ret.BitLen())
+	for _, b := range ret.Bits() {
+		if b == 1 {
+			buf.WriteByte('1')
+		} else {
+			buf.WriteByte('0')
+		}
+	}
+	str := buf.String()
+	return str, nil
+}
+
+func BitStringOr(str1 string, str2 string) (string, error) {
+	var (
+		n1  big.Int
+		n2  big.Int
+		ret big.Int
+	)
+	if _, ok := n1.SetString(str1, 2); !ok {
+		return "", errors.New("invalid str1")
+	}
+	if _, ok := n2.SetString(str2, 2); !ok {
+		return "", errors.New("invalid str2")
+	}
+	ret.Or(&n1, &n2)
+	buf := GetBufferPool()
+	defer PutBufferPool(buf)
+	buf.Grow(ret.BitLen())
+	for _, b := range ret.Bits() {
+		if b == 1 {
+			buf.WriteByte('1')
+		} else {
+			buf.WriteByte('0')
+		}
+	}
+	str := buf.String()
+	return str, nil
+}
+
+func BitStringXor(str1 string, str2 string) (string, error) {
+	var (
+		n1  big.Int
+		n2  big.Int
+		ret big.Int
+	)
+	if _, ok := n1.SetString(str1, 2); !ok {
+		return "", errors.New("invalid str1")
+	}
+	if _, ok := n2.SetString(str2, 2); !ok {
+		return "", errors.New("invalid str2")
+	}
+	ret.Xor(&n1, &n2)
+	buf := GetBufferPool()
+	defer PutBufferPool(buf)
+	buf.Grow(ret.BitLen())
+	for _, b := range ret.Bits() {
+		if b == 1 {
+			buf.WriteByte('1')
+		} else {
+			buf.WriteByte('0')
+		}
+	}
+	str := buf.String()
+	return str, nil
 }

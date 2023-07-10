@@ -245,6 +245,30 @@ func Uint64SliceFromString(str string, spliter string) []uint64 {
 	return ret
 }
 
+func Int64SliceToString(arr []int64, spliter string) string {
+	builder := GetStringsBuilder()
+	defer PutStringsBuilder(builder)
+	l := len(arr)
+	for idx, v := range arr {
+		builder.WriteString(strconv.FormatInt(v, 10))
+		if idx < l-1 {
+			builder.WriteString(spliter)
+		}
+	}
+	return builder.String()
+}
+
+func Int64SliceFromString(str string, spliter string) []int64 {
+	arr := strings.Split(str, spliter)
+	ret := make([]int64, 0, len(arr))
+	for _, s := range arr {
+		if v, err := strconv.ParseInt(strings.TrimSpace(s), 10, 64); err == nil {
+			ret = append(ret, v)
+		}
+	}
+	return ret
+}
+
 func IntToBytes(i int) []byte {
 	return Uint64ToBytes(uint64(i))
 }

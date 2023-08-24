@@ -3,7 +3,7 @@ package goutil
 import (
 	"bytes"
 	"compress/gzip"
-	"io/ioutil"
+	"io"
 )
 
 func GzipDecode(in []byte) ([]byte, error) {
@@ -13,5 +13,5 @@ func GzipDecode(in []byte) ([]byte, error) {
 		return out, err
 	}
 	defer reader.Close()
-	return ioutil.ReadAll(reader)
+	return io.ReadAll(reader)
 }

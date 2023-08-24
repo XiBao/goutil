@@ -3,6 +3,7 @@ package goutil
 import (
 	"encoding/binary"
 	"fmt"
+	"math"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -289,4 +290,8 @@ func Int64FromBytes(b []byte) int64 {
 
 func Uint64FromBytes(b []byte) uint64 {
 	return nativeEndian.Uint64(b)
+}
+
+func IntFromFloat[T uint64 | int64 | int | uint](f64 float64, mul float64) T {
+	return T(math.Round(f64 * mul))
 }

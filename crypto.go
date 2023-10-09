@@ -34,6 +34,12 @@ func Md5Bytes(bs []byte) []byte {
 	return h.Sum(nil)
 }
 
+func Md5StringToBytes(str string) []byte {
+	h := md5.New()
+	io.WriteString(h, str)
+	return h.Sum(nil)
+}
+
 func Md5StringFromBytes(bytes []byte) string {
 	src := md5.Sum(bytes)
 	return strings.ToLower(hex.EncodeToString(src[:]))
@@ -49,6 +55,18 @@ func Sha1(str string) string {
 	h := sha1.New()
 	io.WriteString(h, str)
 	return hex.EncodeToString(h.Sum(nil))
+}
+
+func Sha1StringToBytes(str string) []byte {
+	h := sha1.New()
+	io.WriteString(h, str)
+	return h.Sum(nil)
+}
+
+func Sha1Bytes(bs []byte) []byte {
+	h := sha1.New()
+	h.Write(bs)
+	return h.Sum(nil)
 }
 
 func Sha1FromReader(r io.Reader) string {

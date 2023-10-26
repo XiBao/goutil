@@ -3,7 +3,6 @@ package rand
 import (
 	"fmt"
 	"math/rand"
-	"time"
 )
 
 // WeightedRoundRobin Weight Round Robin Alghoritm
@@ -28,7 +27,7 @@ func NewWeightedRoundRobin(pdf []int) (wrr *WeightedRoundRobin, err error) {
 	if r != 100 {
 		return wrr, fmt.Errorf("sum of pdf elements must be equal to 100 perent")
 	}
-	rand.Seed(time.Now().UnixNano())
+	// rand.Seed(time.Now().UnixNano())
 	wrr = &WeightedRoundRobin{
 		pdf:      pdf,
 		index100: max100,

@@ -19,7 +19,6 @@ import (
 	"bytes"
 	"math"
 	"math/rand"
-	"time"
 )
 
 const (
@@ -41,9 +40,9 @@ var (
 )
 
 // init initializes the random number generator
-func init() {
-	rand.Seed(time.Now().UTC().UnixNano())
-}
+// func init() {
+// 	rand.Seed(time.Now().UTC().UnixNano())
+// }
 
 // Token is an alias of an uint64 that is marshalled into a base62 encoded token
 type Token uint64

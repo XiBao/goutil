@@ -58,3 +58,41 @@ func GetUrlValues() url.Values {
 func PutUrlValues(vals url.Values) {
 	urlValuesPool.Put(vals)
 }
+
+var syncPoolRegistries = new(sync.Map)
+
+type Poolable interface {
+	Reset()
+}
+
+type SyncPool[T Poolable] struct {
+	pool *sync.Pool
+}
+
+func NewSyncPool[T Poolable](name string) *SyncPool[T] {
+	if name != "" {
+		ret, ok := syncPoolRegistries.Load(name)
+		if ok {
+			return ret.(*SyncPool[T])
+		}
+	}
+	ret := new(SyncPool[T])
+	ret.pool = &sync.Pool{
+		New: func() any {
+			return new(T)
+		},
+	}
+	if name != "" {
+		syncPoolRegistries.Store(name, ret)
+	}
+	return ret
+}
+
+func (p *SyncPool[T]) Get() T {
+	return p.pool.Get().(T)
+}
+
+func (p *SyncPool[T]) Release(v T) {
+	v.Reset()
+	p.pool.Put(v)
+}

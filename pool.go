@@ -69,7 +69,7 @@ type SyncPool[T Poolable] struct {
 	pool *sync.Pool
 }
 
-func NewSyncPool[T Poolable](name string) *SyncPool[T] {
+func NewSyncPool[T Poolable]() *SyncPool[T] {
 	ret := new(SyncPool[T])
 	ret.pool = &sync.Pool{
 		New: func() any {
@@ -92,7 +92,7 @@ func LoadSyncPool[T Poolable](name string) *SyncPool[T] {
 	if ret, ok := syncPoolRegistries.Load(name); ok {
 		return ret.(*SyncPool[T])
 	}
-	ret := NewSyncPool[T](name)
+	ret := NewSyncPool[T]()
 	syncPoolRegistries.Store(name, ret)
 	return ret
 }

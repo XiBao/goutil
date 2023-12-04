@@ -222,54 +222,6 @@ func RangeRandInt(from int, to int) int {
 	return rand.Intn(to+1-from) + from
 }
 
-func Uint64SliceToString(arr []uint64, spliter string) string {
-	builder := GetStringsBuilder()
-	defer PutStringsBuilder(builder)
-	l := len(arr)
-	for idx, v := range arr {
-		builder.WriteString(strconv.FormatUint(v, 10))
-		if idx < l-1 {
-			builder.WriteString(spliter)
-		}
-	}
-	return builder.String()
-}
-
-func Uint64SliceFromString(str string, spliter string) []uint64 {
-	arr := strings.Split(str, spliter)
-	ret := make([]uint64, 0, len(arr))
-	for _, s := range arr {
-		if v, err := strconv.ParseUint(strings.TrimSpace(s), 10, 64); err == nil {
-			ret = append(ret, v)
-		}
-	}
-	return ret
-}
-
-func Int64SliceToString(arr []int64, spliter string) string {
-	builder := GetStringsBuilder()
-	defer PutStringsBuilder(builder)
-	l := len(arr)
-	for idx, v := range arr {
-		builder.WriteString(strconv.FormatInt(v, 10))
-		if idx < l-1 {
-			builder.WriteString(spliter)
-		}
-	}
-	return builder.String()
-}
-
-func Int64SliceFromString(str string, spliter string) []int64 {
-	arr := strings.Split(str, spliter)
-	ret := make([]int64, 0, len(arr))
-	for _, s := range arr {
-		if v, err := strconv.ParseInt(strings.TrimSpace(s), 10, 64); err == nil {
-			ret = append(ret, v)
-		}
-	}
-	return ret
-}
-
 func IntToBytes(i int) []byte {
 	return Uint64ToBytes(uint64(i))
 }
@@ -294,4 +246,52 @@ func Uint64FromBytes(b []byte) uint64 {
 
 func IntFromFloat[T uint64 | int64 | int | uint](f64 float64, mul float64) T {
 	return T(math.Round(f64 * mul))
+}
+
+func IntSliceToString[T int32 | int64 | int](arr []T, spliter string) string {
+	builder := GetStringsBuilder()
+	defer PutStringsBuilder(builder)
+	l := len(arr)
+	for idx, v := range arr {
+		builder.WriteString(strconv.FormatInt(int64(v), 10))
+		if idx < l-1 {
+			builder.WriteString(spliter)
+		}
+	}
+	return builder.String()
+}
+
+func IntSliceFromString[T int32 | int64 | int](str string, spliter string) []T {
+	arr := strings.Split(str, spliter)
+	ret := make([]T, 0, len(arr))
+	for _, s := range arr {
+		if v, err := strconv.ParseInt(strings.TrimSpace(s), 10, 64); err == nil {
+			ret = append(ret, T(v))
+		}
+	}
+	return ret
+}
+
+func UintSliceToString[T uint32 | uint64 | uint](arr []T, spliter string) string {
+	builder := GetStringsBuilder()
+	defer PutStringsBuilder(builder)
+	l := len(arr)
+	for idx, v := range arr {
+		builder.WriteString(strconv.FormatUint(uint64(v), 10))
+		if idx < l-1 {
+			builder.WriteString(spliter)
+		}
+	}
+	return builder.String()
+}
+
+func UintSliceFromString[T uint32 | uint64 | uint](str string, spliter string) []T {
+	arr := strings.Split(str, spliter)
+	ret := make([]T, 0, len(arr))
+	for _, s := range arr {
+		if v, err := strconv.ParseUint(strings.TrimSpace(s), 10, 64); err == nil {
+			ret = append(ret, T(v))
+		}
+	}
+	return ret
 }

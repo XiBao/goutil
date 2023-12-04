@@ -248,7 +248,7 @@ func IntFromFloat[T uint64 | int64 | int | uint](f64 float64, mul float64) T {
 	return T(math.Round(f64 * mul))
 }
 
-func IntSliceToString[T int32 | int64 | int](arr []T, spliter string) string {
+func IntSliceToString[T ~int32 | int64 | int](arr []T, spliter string) string {
 	builder := GetStringsBuilder()
 	defer PutStringsBuilder(builder)
 	l := len(arr)
@@ -261,7 +261,7 @@ func IntSliceToString[T int32 | int64 | int](arr []T, spliter string) string {
 	return builder.String()
 }
 
-func IntSliceFromString[T int32 | int64 | int](str string, spliter string) []T {
+func IntSliceFromString[T ~int32 | int64 | int](str string, spliter string) []T {
 	arr := strings.Split(str, spliter)
 	ret := make([]T, 0, len(arr))
 	for _, s := range arr {
@@ -272,7 +272,7 @@ func IntSliceFromString[T int32 | int64 | int](str string, spliter string) []T {
 	return ret
 }
 
-func UintSliceToString[T uint32 | uint64 | uint](arr []T, spliter string) string {
+func UintSliceToString[T ~uint32 | uint64 | uint](arr []T, spliter string) string {
 	builder := GetStringsBuilder()
 	defer PutStringsBuilder(builder)
 	l := len(arr)
@@ -285,7 +285,7 @@ func UintSliceToString[T uint32 | uint64 | uint](arr []T, spliter string) string
 	return builder.String()
 }
 
-func UintSliceFromString[T uint32 | uint64 | uint](str string, spliter string) []T {
+func UintSliceFromString[T ~uint32 | uint64 | uint](str string, spliter string) []T {
 	arr := strings.Split(str, spliter)
 	ret := make([]T, 0, len(arr))
 	for _, s := range arr {

@@ -249,9 +249,12 @@ func IntFromFloat[T uint64 | int64 | int | uint](f64 float64, mul float64) T {
 }
 
 func IntSliceToString[T ~int32 | int64 | int](arr []T, spliter string) string {
+	l := len(arr)
+	if l == 0 {
+		return ""
+	}
 	builder := GetStringsBuilder()
 	defer PutStringsBuilder(builder)
-	l := len(arr)
 	for idx, v := range arr {
 		builder.WriteString(strconv.FormatInt(int64(v), 10))
 		if idx < l-1 {
@@ -262,6 +265,9 @@ func IntSliceToString[T ~int32 | int64 | int](arr []T, spliter string) string {
 }
 
 func IntSliceFromString[T ~int32 | int64 | int](str string, spliter string) []T {
+	if str == "" {
+		return nil
+	}
 	arr := strings.Split(str, spliter)
 	ret := make([]T, 0, len(arr))
 	for _, s := range arr {
@@ -273,9 +279,12 @@ func IntSliceFromString[T ~int32 | int64 | int](str string, spliter string) []T 
 }
 
 func UintSliceToString[T ~uint32 | uint64 | uint](arr []T, spliter string) string {
+	l := len(arr)
+	if l == 0 {
+		return ""
+	}
 	builder := GetStringsBuilder()
 	defer PutStringsBuilder(builder)
-	l := len(arr)
 	for idx, v := range arr {
 		builder.WriteString(strconv.FormatUint(uint64(v), 10))
 		if idx < l-1 {
@@ -286,6 +295,9 @@ func UintSliceToString[T ~uint32 | uint64 | uint](arr []T, spliter string) strin
 }
 
 func UintSliceFromString[T ~uint32 | uint64 | uint](str string, spliter string) []T {
+	if str == "" {
+		return nil
+	}
 	arr := strings.Split(str, spliter)
 	ret := make([]T, 0, len(arr))
 	for _, s := range arr {

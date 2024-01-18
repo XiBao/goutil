@@ -10,9 +10,13 @@ import (
 	"unsafe"
 
 	"github.com/jackc/numfmt"
+	"github.com/sqids/sqids-go"
 )
 
-var nativeEndian binary.ByteOrder
+var (
+	nativeEndian binary.ByteOrder
+	sqidsEnc, _  = sqids.New()
+)
 
 func init() {
 	buf := [2]byte{}
@@ -244,11 +248,11 @@ func Uint64FromBytes(b []byte) uint64 {
 	return nativeEndian.Uint64(b)
 }
 
-func IntFromFloat[T uint64 | int64 | int | uint](f64 float64, mul float64) T {
+func IntFromFloat[T ~uint64 | ~int64 | ~int32 | ~uint32 | ~int | ~uint](f64 float64, mul float64) T {
 	return T(math.Round(f64 * mul))
 }
 
-func IntSliceToString[T ~int32 | int64 | int](arr []T, spliter string) string {
+func IntSliceToString[T ~int32 | ~int64 | ~int](arr []T, spliter string) string {
 	l := len(arr)
 	if l == 0 {
 		return ""
@@ -264,7 +268,7 @@ func IntSliceToString[T ~int32 | int64 | int](arr []T, spliter string) string {
 	return builder.String()
 }
 
-func IntSliceFromString[T ~int32 | int64 | int](str string, spliter string) []T {
+func IntSliceFromString[T ~int32 | ~int64 | ~int](str string, spliter string) []T {
 	if str == "" {
 		return nil
 	}
@@ -278,7 +282,7 @@ func IntSliceFromString[T ~int32 | int64 | int](str string, spliter string) []T 
 	return ret
 }
 
-func UintSliceToString[T ~uint32 | uint64 | uint](arr []T, spliter string) string {
+func UintSliceToString[T ~uint32 | ~uint64 | ~uint](arr []T, spliter string) string {
 	l := len(arr)
 	if l == 0 {
 		return ""
@@ -294,7 +298,7 @@ func UintSliceToString[T ~uint32 | uint64 | uint](arr []T, spliter string) strin
 	return builder.String()
 }
 
-func UintSliceFromString[T ~uint32 | uint64 | uint](str string, spliter string) []T {
+func UintSliceFromString[T ~uint32 | ~uint64 | ~uint](str string, spliter string) []T {
 	if str == "" {
 		return nil
 	}
@@ -306,4 +310,21 @@ func UintSliceFromString[T ~uint32 | uint64 | uint](str string, spliter string) 
 		}
 	}
 	return ret
+}
+
+func NumbersToUint64s[T ~int | ~int32 | ~uint | ~uint32](arr []T) []uint64 {
+	ret := make([]uint64, 0, len(arr))
+	for _, v := range arr {
+		ret = append(ret, uint64(v))
+	}
+	return ret
+}
+
+func EncodeUint64s(ids ...uint64) string {
+	ret, _ := sqidsEnc.Encode(ids)
+	return ret
+}
+
+func DecodeUint64s(req string) []uint64 {
+	return sqidsEnc.Decode(req)
 }

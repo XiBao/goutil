@@ -7,6 +7,7 @@ require (
 	github.com/h2non/filetype v1.1.3
 	github.com/jackc/numfmt v0.0.0-20210209201056-0429016d44dd
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
+	github.com/sqids/sqids-go v0.4.1
 	github.com/stretchr/testify v1.8.2
 	github.com/ziutek/mymysql v1.5.4
 )

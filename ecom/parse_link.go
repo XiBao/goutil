@@ -41,8 +41,8 @@ type ICache interface {
 
 var cache ICache
 
-func SetCache(cache ICache) {
-	cache = cache
+func SetCache(v ICache) {
+	cache = v
 }
 
 func Cache() ICache {
@@ -228,6 +228,10 @@ func GetLinkSku(ctx context.Context, link string) (uint64, Platform, error) {
 			parts := strings.Split(linkPath, "/")
 			if itemId, _ := strconv.ParseUint(parts[3], 10, 64); itemId > 0 {
 				return itemId, UNKNOWN_PLATFORM, nil
+			} else if parts := strings.Split(linkPath, "-"); len(parts) == 0 {
+				if arr := goutil.DecodeUint64s(parts[1]); len(arr) > 1 && arr[1] > 0 {
+					return arr[1], UNKNOWN_PLATFORM, nil
+				}
 			}
 		}
 	} else if parsedUrl.Host == "wxmall.xibao100.com" {

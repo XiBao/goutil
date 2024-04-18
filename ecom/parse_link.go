@@ -238,6 +238,9 @@ func GetLinkSku(ctx context.Context, link string) (uint64, Platform, error) {
 		if itemId, _ := strconv.ParseUint(query.Get("id"), 10, 64); itemId > 0 {
 			return itemId, WECHAT, nil
 		}
+		if itemId, _ := strconv.ParseUint(query.Get("sku_id"), 10, 64); itemId > 0 {
+			return itemId, WECHAT, nil
+		}
 	} else if strings.HasSuffix(parsedUrl.Host, ".taobao.com") || strings.HasSuffix(parsedUrl.Host, ".tmall.com") || strings.HasSuffix(parsedUrl.Host, ".tb.cn") || strings.HasSuffix(parsedUrl.Host, ".duanqu.com") {
 		if itemId, _ := GetTaobaoItemIDFromLink(parsedUrl); itemId > 0 {
 			return itemId, TAOBAO, nil

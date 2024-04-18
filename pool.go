@@ -92,7 +92,7 @@ func LoadSyncPool[T Poolable](name string, fn func() T) *SyncPool[T] {
 	if ret, ok := syncPoolRegistries.Load(name); ok {
 		return ret.(*SyncPool[T])
 	}
-	ret := NewSyncPool[T](fn)
+	ret := NewSyncPool(fn)
 	syncPoolRegistries.Store(name, ret)
 	return ret
 }

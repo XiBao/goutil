@@ -45,6 +45,11 @@ func (u64 *Uint64) UnmarshalJSON(b []byte) (err error) {
 	return
 }
 
+// UnmarshalParam satisfies gin.BindUnmarshaler
+func (u64 *Uint64) UnmarshalParam(param string) error {
+	return u64.UnmarshalJSON([]byte(param))
+}
+
 func (u64 Uint64) Value() uint64 {
 	return uint64(u64)
 }
@@ -90,6 +95,11 @@ func (i64 *Int64) UnmarshalJSON(b []byte) (err error) {
 	return
 }
 
+// UnmarshalParam satisfies gin.BindUnmarshaler
+func (i64 *Int64) UnmarshalParam(param string) error {
+	return i64.UnmarshalJSON([]byte(param))
+}
+
 func (i64 Int64) Value() int64 {
 	return int64(i64)
 }
@@ -114,6 +124,11 @@ func (i64 *JSONInt64) UnmarshalJSON(b []byte) (err error) {
 	return
 }
 
+// UnmarshalParam satisfies gin.BindUnmarshaler
+func (i64 *JSONInt64) UnmarshalParam(param string) error {
+	return i64.UnmarshalJSON([]byte(param))
+}
+
 func (i64 JSONInt64) Value() int64 {
 	return int64(i64)
 }
@@ -135,6 +150,11 @@ func (i32 *Int) UnmarshalJSON(b []byte) (err error) {
 	return
 }
 
+// UnmarshalParam satisfies gin.BindUnmarshaler
+func (i32 *Int) UnmarshalParam(param string) error {
+	return i32.UnmarshalJSON([]byte(param))
+}
+
 func (i32 Int) Value() int {
 	return int(i32)
 }
@@ -154,6 +174,11 @@ func (f64 *Float64) UnmarshalJSON(b []byte) (err error) {
 	i, _ := strconv.ParseFloat(string(b), 64)
 	*f64 = Float64(i)
 	return
+}
+
+// UnmarshalParam satisfies gin.BindUnmarshaler
+func (f64 *Float64) UnmarshalParam(param string) error {
+	return f64.UnmarshalJSON([]byte(param))
 }
 
 func (f64 Float64) Value() float64 {

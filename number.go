@@ -37,6 +37,9 @@ type Uint64 uint64
 
 // UnmarshalJSON implement json Unmarshal interface
 func (u64 *Uint64) UnmarshalJSON(b []byte) (err error) {
+	if len(b) == 0 {
+		*u64 = 0
+	}
 	if b[0] == '"' && b[len(b)-1] == '"' {
 		b = b[1 : len(b)-1]
 	}
@@ -66,6 +69,9 @@ func (u64 JSONUint64) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implement json Unmarshal interface
 func (u64 *JSONUint64) UnmarshalJSON(b []byte) (err error) {
+	if len(b) == 0 {
+		*u64 = 0
+	}
 	if b[0] == '"' && b[len(b)-1] == '"' {
 		b = b[1 : len(b)-1]
 	}
@@ -87,6 +93,9 @@ type Int64 int64
 
 // UnmarshalJSON implement json Unmarshal interface
 func (i64 *Int64) UnmarshalJSON(b []byte) (err error) {
+	if len(b) == 0 {
+		*i64 = 0
+	}
 	if b[0] == '"' && b[len(b)-1] == '"' {
 		b = b[1 : len(b)-1]
 	}
@@ -116,6 +125,9 @@ func (i64 JSONInt64) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implement json Unmarshal interface
 func (i64 *JSONInt64) UnmarshalJSON(b []byte) (err error) {
+	if len(b) == 0 {
+		*i64 = 0
+	}
 	if b[0] == '"' && b[len(b)-1] == '"' {
 		b = b[1 : len(b)-1]
 	}
@@ -142,6 +154,9 @@ type Int int
 
 // UnmarshalJSON implement json Unmarshal interface
 func (i32 *Int) UnmarshalJSON(b []byte) (err error) {
+	if len(b) == 0 {
+		*i32 = 0
+	}
 	if b[0] == '"' && b[len(b)-1] == '"' {
 		b = b[1 : len(b)-1]
 	}
@@ -168,6 +183,9 @@ type Float64 float64
 
 // UnmarshalJSON implement json Unmarshal interface
 func (f64 *Float64) UnmarshalJSON(b []byte) (err error) {
+	if len(b) == 0 {
+		*f64 = 0
+	}
 	if b[0] == '"' && b[len(b)-1] == '"' {
 		b = b[1 : len(b)-1]
 	}

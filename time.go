@@ -57,6 +57,11 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+func TimeIsZero(t time.Time) bool {
+	date := t.Format("2006-01-02")
+	return t.IsZero() || date == "0001-01-01" || date == "1970-01-01" || date == "0000-00-00"
+}
+
 func TimeToDate(ts time.Time) time.Time {
 	loc := ts.Location()
 	return time.Date(ts.Year(), ts.Month(), ts.Day(), 0, 0, 0, 0, loc)

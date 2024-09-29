@@ -197,7 +197,7 @@ func GetDeeplinkSku(ctx context.Context, link string) (uint64, Platform, error) 
 		if h5Page, err := url.ParseRequestURI(parsedURL.Query().Get("h5Url")); err != nil {
 			return 0, UNKNOWN_PLATFORM, errors.Join(errors.New("解析拼多多链接失败"), err)
 		} else if itemID, _ := strconv.ParseUint(h5Page.Query().Get("goods_id"), 10, 64); itemID > 0 {
-			return itemID, JD, nil
+			return itemID, PDD, nil
 		}
 	default:
 		return 0, UNKNOWN_PLATFORM, errors.New("未知平台链接")

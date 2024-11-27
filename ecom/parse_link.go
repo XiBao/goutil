@@ -28,6 +28,7 @@ const (
 	JD
 	PDD
 	WECHAT
+	MEITUAN
 )
 
 func linkCacheKey(link string) string {
@@ -57,7 +58,7 @@ func ExtractLink(ctx context.Context, link string, cacheExp int64) (string, erro
 	if strings.HasSuffix(parsedLink.Host, ".xibao100.com") {
 		return link, nil
 	}
-	suffixDomains := []string{".taobao.com", ".tmall.com", ".tmall.hk", ".jd.com", ".jd.hk", ".yiyaojd.com", ".tb.cn", ".pinduoduo.com", ".yangkeduo.com", ".duanqu.com", ".1688.com"}
+	suffixDomains := []string{".taobao.com", ".tmall.com", ".tmall.hk", ".jd.com", ".jd.hk", ".yiyaojd.com", ".tb.cn", ".pinduoduo.com", ".yangkeduo.com", ".duanqu.com", ".1688.com", ".meituan.com"}
 	for _, suffix := range suffixDomains {
 		if strings.HasSuffix(parsedLink.Host, suffix) {
 			return link, nil
@@ -199,6 +200,19 @@ func GetDeeplinkSku(ctx context.Context, link string) (uint64, Platform, error) 
 		} else if itemID, _ := strconv.ParseUint(h5Page.Query().Get("goods_id"), 10, 64); itemID > 0 {
 			return itemID, PDD, nil
 		}
+	case "imeituan":
+		query := parsedURL.Query()
+		subLink := query.Get("targetPath")
+		if subLink == "" {
+			subLink = query.Get("url")
+		}
+		if subLink != "" {
+			if h5Page, err := url.ParseRequestURI(subLink); err != nil {
+				return 0, UNKNOWN_PLATFORM, errors.Join(errors.New("解析美团链接失败"), err)
+			} else if itemID, _ := strconv.ParseUint(h5Page.Query().Get("sku_id"), 10, 64); itemID > 0 {
+				return itemID, MEITUAN, nil
+			}
+		}
 	default:
 		return 0, UNKNOWN_PLATFORM, errors.New("未知平台链接")
 	}
@@ -252,6 +266,10 @@ func GetLinkSku(ctx context.Context, link string) (uint64, Platform, error) {
 	} else if strings.HasSuffix(parsedUrl.Host, ".pinduoduo.com") || strings.HasSuffix(parsedUrl.Host, ".yangkeduo.com") {
 		if itemId, _ := strconv.ParseUint(parsedUrl.Query().Get("goods_id"), 10, 64); itemId > 0 {
 			return itemId, PDD, nil
+		}
+	} else if strings.HasSuffix(parsedUrl.Host, ".meituan.com") {
+		if itemId, _ := GetMeituanItemIDFromLink(parsedUrl); itemId > 0 {
+			return itemId, MEITUAN, nil
 		}
 	}
 	return 0, UNKNOWN_PLATFORM, errors.New(goutil.StringsJoin("无法获取商品ID, 链接:", link))
@@ -467,6 +485,26 @@ func GetTaobaoItemIDFromLink(parsedUrl *url.URL) (uint64, error) {
 		query := parsedUrl.Query()
 		if itemId, _ := strconv.ParseUint(query.Get("id"), 10, 64); itemId > 0 {
 			return itemId, nil
+		}
+	}
+	return 0, errors.New("not found")
+}
+
+func GetMeituanItemIDFromLink(parsedURL *url.URL) (uint64, error) {
+	query := parsedURL.Query()
+	if str := query.Get("page_sku_id"); str != "" {
+		if itemID, _ := strconv.ParseUint(str, 10, 64); itemID > 0 {
+			return itemID, nil
+		}
+	}
+	if str := query.Get("sku_id"); str != "" {
+		if itemID, _ := strconv.ParseUint(str, 10, 64); itemID > 0 {
+			return itemID, nil
+		}
+	}
+	if str := query.Get("deepLinkUrl"); str != "" {
+		if itemID, platform, _ := GetDeeplinkSku(context.Background(), str); itemID > 0 && platform == MEITUAN {
+			return itemID, nil
 		}
 	}
 	return 0, errors.New("not found")
